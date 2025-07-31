@@ -1,6 +1,7 @@
 --Data Exploration for Covid Deaths--
 
 --To eliminate the c1,c2,c3, etc column names in SQLite
+
 CREATE TABLE CovidDeathsModified (
   iso_code TEXT,
   continent TEXT,
@@ -46,12 +47,12 @@ LIMIT 5;
 
 
 --Modified Table
+
 SELECT *
 FROM CovidDeathsModified
 Where continent is not NULL;
 
 --PRAGMA table_info(CovidDeathsModified);
-
 
 -- Select the data that we are going to use
 
@@ -63,6 +64,7 @@ ORDER BY location, DATE(date) ASC;
 
 -- Looking at Total Cases vs Total Deaths
 -- Shows the percentage of death compared to the affected cases
+
 SELECT location, date, total_cases, total_deaths, ROUND (100.0 * total_deaths/total_cases, 2)  AS DeathPercentage
 FROM CovidDeathsModified
 WHERE location like '%states%' -- example: states
@@ -72,6 +74,7 @@ ORDER BY location, DATE(date);
 
 -- Looking at Total Cases vs Population
 -- Shows what percentage of population got covid
+
 SELECT location, date,population, total_cases, CAST( total_cases as REAL) / population * 100  AS PercentPopulationInfected
 FROM CovidDeathsModified
 --WHERE location like '%states%'
@@ -80,15 +83,18 @@ ORDER BY location, DATE(date) ASC;
 
 
 --Showing which country has the highest infection rate compared to population
+
 SELECT location, population, MAX(total_cases) as HighestInfectionCount,  MAX(CAST(total_cases AS REAL) / population) * 100 as PercentPopulationInfected
 FROM CovidDeathsModified
 GROUP BY location, population 
 ORDER BY PercentPopulationInfected DESC;
 
 -- debugging 
+
 --SELECT DISTINCT location from CovidDeathsModified ORDER by location; 
 
 --Showing coutries with highest death count as per their population
+
 SELECT location, MAX(CAST(total_deaths AS int)) as TotalDeathCount
 FROM CovidDeathsModified
 Where continent is not NULL
@@ -97,10 +103,12 @@ GROUP BY location
 ORDER BY TotalDeathCount DESC;
 
 -- debugging 
+
 --SELECT DISTINCT continent from CovidDeathsModified ORDER by continent; 
 
 
 --Showing continents with highest death count as per population 
+
 SELECT continent, MAX(CAST(total_deaths as int)) as TotalDeathCount
 FROM CovidDeathsModified
 WHERE continent is not NULL 
@@ -109,7 +117,8 @@ group by continent
 order by TotalDeathCount desc;
 
 /*
--- GLOBAL NUMBERS -- wrong numbers
+-- GLOBAL NUMBERS 
+
 SELECT SUM(new_cases) AS total_cases, SUM(CAST(new_deaths as int)) as total_deaths,  SUM(CAST(new_deaths as int))/SUM(new_cases) * 100 as DeathPercentage
 FROM CovidDeathsModified
 WHERE continent is not NULL
@@ -121,8 +130,8 @@ order by 1, 2;
 
 --Data Exploration for Covid Vaccinations--
 
-
 --To eliminate the c1,c2,c3, etc column names in SQLite
+
 CREATE TABLE CovidVaccinationsModified (
   iso_code TEXT,
   continent TEXT,
@@ -176,6 +185,7 @@ DROP TABLE CovidVaccinations;
 
 
 --Modified Table
+
 SELECT * 
 FROM CovidVaccinationsModified
 LIMIT 20;
